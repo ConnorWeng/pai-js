@@ -44,7 +44,7 @@ var _pai = function(sid) {
 		};
 		// TODO: on事件覆盖，改成attachEvent的bind方法
 		document.body.onclick = function() {
-			p.push({"e" : "onclick", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement)})
+			p.push({"e" : "onclick", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement)});
 		};
 		document.body.onkeyup = function() {
 			p.push({"e" : "onkeyup", "keyCode" : event.keyCode, "ctrlKey" : event.ctrlKey, "altKey" : event.altKey, "shiftKey" : event.shiftKey, "srcElement" : getEleId(event.srcElement)});
@@ -97,7 +97,6 @@ var _pai = function(sid) {
 		// TODO: onunload
 		// TODO: onfocus（不冒泡）如果记录了mousemove和keyuptab，是不是可以认为就是可以区分focus了
 		// TODO: onbeforeunload
-		// TODO: onresize
 	};
 	window.onload = p.domready;
 };
