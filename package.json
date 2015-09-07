@@ -1,0 +1,24 @@
+{
+  "name": "pai-js",
+  "version": "0.0.0",
+  "description": "",
+  "main": "pai.js",
+  "scripts": {
+    "test": "karma start karma.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.sdc.icbc:000831501/pai-js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "chai": "^3.2.0",
+    "karma-chai": "^0.1.0",
+    "mocha": "^2.3.1",
+    "karma-mocha": "^0.2.0",
+    "jshint": "^2.8.0"
+  }
+}
