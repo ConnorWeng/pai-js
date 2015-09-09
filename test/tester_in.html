@@ -4,18 +4,18 @@
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
 <meta name="viewport" content="width=device-width" />
 <title>test PAI</title>
-<script src="pai.js" type="text/javascript"></script>
+<script src="../src/pai.js" type="text/javascript"></script>
 <script type="text/javascript">
 var pai = new _pai();
 </script>
 </head>
 <body>
+	INNER IFRAME!
 	<div>
-		<button onclick="pai.savelocal()">save</button>
-		<input id='ip' type=text value="abc"/>
-		<a onclick="window.location.href = '../angular/h.html'" href="a.html">adfadf</a>
+		<button onclick="pai.saveremote()">saveremote</button>
+		<input id='ip_in' type=text value="abc"/>
 	</div>
-	<TEXTAREA id='ta' ROWS=5>ads
+	<TEXTAREA id='ta_in' ROWS=5>ads
 		sfd
 
 		sfd
@@ -25,8 +25,6 @@ var pai = new _pai();
 
 		fds
 	</TEXTAREA>
-	<br>
-	<iframe src="tester_in.html"></iframe>
 	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	<div>
