@@ -37,7 +37,7 @@ var _pai = function(sid) {
 	p.saveremote = function() {
 		console.log(window.localStorage.getItem("_pai"));
 		window.localStorage.removeItem("_pai");
-	}
+	};
 	p.domready = function() {
 		var getEleId = function(ele) {
 			return ele && (ele.id || ele.name || ele.tagName);
@@ -48,7 +48,7 @@ var _pai = function(sid) {
 			} else if (obj.attachEvent) {
 				obj.attachEvent("on" + eventname, func);
 			}
-		}
+		};
 		eventInject(document.body, 'click', function() {
 			p.push({"e" : "click", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement)});
 		});
@@ -84,7 +84,7 @@ var _pai = function(sid) {
 			if (typeof window.innerWidth != 'undefined') {
 				return [window.innerWidth, window.innerHeight];
 			// IE6/IE8
-			} else if (document.documentElement && typeof document.documentElement.clientWidth != 'undefined' && document.documentElement.clientWidth != 0) {
+			} else if (document.documentElement && typeof document.documentElement.clientWidth != 'undefined' && document.documentElement.clientWidth !== 0) {
 				return [document.documentElement.clientWidth, document.documentElement.clientHeight];
 			// Older IE
 			} else {
