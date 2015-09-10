@@ -4,7 +4,7 @@
   "description": "",
   "main": "pai.js",
   "scripts": {
-    "test": "karma start karma.conf.js"
+    "test": "node node_modules/jshint/bin/jshint ./src ./test && karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
