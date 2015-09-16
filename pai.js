@@ -109,6 +109,9 @@ var _pai = function(sid) {
 				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screnn" : [screen.width, screen.height], "pos" : [window.screenLeft, window.screenTop]});
 			}, 250);
 		});
+		eventInject(window, 'unload', function() {
+			p.push({"e" : "unload"});
+		});
 		var bodyjs = document.createElement('script');
 		bodyjs.type = "text/javascript";
 		// this maybe buggy on IE<=9 when there is more than one script use appendChild script, and with defer.
