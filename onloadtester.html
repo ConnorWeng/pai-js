@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Strict//EN' 'http://www.w3.org/TR/html4/strict.dtd'>
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<title>onload tester</title>
+<script src="jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+var eventInject = function(obj, eventname, func) {
+	if (obj.addEventListener) {
+		obj.addEventListener(eventname, func, false);
+	} else if (obj.attachEvent) {
+		obj.attachEvent("on" + eventname, func);
+	}
+}
+window.onload = function(){
+	$('#target').append('window onload<br>');
+};
+$(document).ready(function(){
+	$('#target').append('jQuery ready 1<br>');
+});
+
+$(window).bind({
+	'load': function(){
+		$('#target').append('jQuery bind load 1<br>');
+	}
+});
+$(window).load(function(){
+	$('#target').append('jQuery window load 1<br>');
+});
+$(window).load(function(){
+	$('#target').append('jQuery window load 2<br>');
+});
+$(window).bind({
+	'load': function(){
+		$('#target').append('jQuery bind load 2<br>');
+	}
+});
+$(document).ready(function(){
+	$('#target').append('jQuery ready 2<br>');
+});
+eventInject(window, 'load', function() {
+	$('#target').append('attachEvent load 1<br>');
+});
+eventInject(window, 'load', function() {
+	$('#target').append('attachEvent load 2<br>');
+});
+eventInject(window, 'load', function() {
+	$('#target').append('attachEvent load 3<br>');
+});
+</script>
+</head>
+<body onload="$('#target').append('body tag onload<br>');">
+	<div id="target"></div>
+	<script type="text/javascript">
+		// 这是个覆盖，请自己解开注释之后测试
+		window.onload = function(){
+			$('#target').append('body window onload<br>');
+		};
+		$(document).ready(function(){
+			$('#target').append('body jQuery ready 1<br>');
+		});
+		$(window).bind({
+			'load': function(){
+				$('#target').append('body jQuery bind load 1<br>');
+			}
+		});
+		$(window).load(function(){
+			$('#target').append('body jQuery window load 1<br>');
+		});
+		$(window).load(function(){
+			$('#target').append('body jQuery window load 2<br>');
+		});
+		$(window).bind({
+			'load': function(){
+				$('#target').append('body jQuery bind load 2<br>');
+			}
+		});
+		$(document).ready(function(){
+			$('#target').append('body jQuery ready 2<br>');
+		});
+	</script>
+</body>
+</html>

@@ -38,17 +38,17 @@ var _pai = function(sid) {
 		console.log(window.localStorage.getItem("_pai"));
 		window.localStorage.removeItem("_pai");
 	}
+	var eventInject = function(obj, eventname, func) {
+		if (obj.addEventListener) {
+			obj.addEventListener(eventname, func, false);
+		} else if (obj.attachEvent) {
+			obj.attachEvent("on" + eventname, func);
+		}
+	}
 	p.domready = function() {
 		var getEleId = function(ele) {
 			return ele && (ele.id || ele.name || ele.tagName);
 		};
-		var eventInject = function(obj, eventname, func) {
-			if (obj.addEventListener) {
-				obj.addEventListener(eventname, func, false);
-			} else if (obj.attachEvent) {
-				obj.attachEvent("on" + eventname, func);
-			}
-		}
 		eventInject(document.body, 'click', function() {
 			p.push({"e" : "click", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement)});
 		});
@@ -102,6 +102,21 @@ var _pai = function(sid) {
 		// TODO: DIV、TEXTAREA等的onscroll没有截取到（不冒泡），iframe的有截取到
 		// TODO: onfocus（不冒泡）如果记录了mousemove和keyuptab，是不是可以认为就是可以区分focus了
 		// TODO: onbeforeunload
+		eventInject(window, 'resize', function() {
+			// TODO: 级联resize会被触发么？需不需要只挂在top上？但这样内部的可调大小的事件是不是就没有了？
+			_pai.resizeTimer && clearTimeout(_pai.resizeTimer);
+			_pai.resizeTimer = setTimeout(function() {
+				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screnn" : [screen.width, screen.height], "pos" : [window.screenLeft, window.screenTop]});
+			}, 250);
+		});
+		var bodyjs = document.createElement('script');
+		bodyjs.type = "text/javascript";
+		// this maybe buggy on IE<=9 when there is more than one script use appendChild script, and with defer.
+		// On Chrome, this works after $(window).load, but before body tag onload.
+		bodyjs.defer = "true";
+		bodyjs.text = "pai.push({'e':'pageload', 't':" + (new Date().getTime() - p.loadStart) + "});"
+		document.body.appendChild(bodyjs);
 	};
-	window.onload = p.domready;
+	eventInject(window, 'load', p.domready);
+	p.loadStart = new Date().getTime();
 };
