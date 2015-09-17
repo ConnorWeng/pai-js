@@ -55,8 +55,8 @@ var _pai = function(sid) {
 				x = e.pageX;
 				y = e.pageY;
 			} else {
-				x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
-				y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+				x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+				y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 			}
 			x -= e.srcElement.offsetLeft;
 			y -= e.srcElement.offsetTop;
@@ -112,17 +112,16 @@ var _pai = function(sid) {
 			// TODO: 级联resize会被触发么？需不需要只挂在top上？但这样内部的可调大小的事件是不是就没有了？
 			_pai.resizeTimer && clearTimeout(_pai.resizeTimer);
 			_pai.resizeTimer = setTimeout(function() {
-				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screnn" : [screen.width, screen.height], "pos" : [window.screenLeft, window.screenTop]});
+				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screen" : [screen.width, screen.height], "pos" : [window.screenLeft, window.screenTop]});
 			}, 250);
 		});
 		// TODO: DIV、TEXTAREA等的onscroll没有截取到（不冒泡），iframe的有截取到
 		// TODO: onfocus（不冒泡）如果记录了mousemove和keyuptab，是不是可以认为就是可以区分focus了
-		// TODO: onbeforeunload
 		eventInject(window, 'resize', function() {
 			// TODO: 级联resize会被触发么？需不需要只挂在top上？但这样内部的可调大小的事件是不是就没有了？
 			_pai.resizeTimer && clearTimeout(_pai.resizeTimer);
 			_pai.resizeTimer = setTimeout(function() {
-				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screnn" : [screen.width, screen.height], "pos" : [window.screenLeft, window.screenTop]});
+				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screen" : [screen.width, screen.height], "pos" : [window.screenLeft, window.screenTop]});
 			}, 250);
 		});
 		eventInject(window, 'unload', function() {
