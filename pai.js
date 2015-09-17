@@ -49,8 +49,22 @@ var _pai = function(sid) {
 		var getEleId = function(ele) {
 			return ele && (ele.id || ele.name || ele.tagName);
 		};
+		var relMouseCoords = function(e){
+			var x, y;
+			if (e.pageX || e.pageY) {
+				x = e.pageX;
+				y = e.pageY;
+			} else {
+				x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+				y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+			}
+			x -= e.srcElement.offsetLeft;
+			y -= e.srcElement.offsetTop;
+			return {x: x, y: y, xp: Math.round(10000 * x / e.srcElement.offsetWidth), yp: Math.round(10000 * y / e.srcElement.offsetHeight)};
+		};
 		eventInject(document.body, 'click', function() {
-			p.push({"e" : "click", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement)});
+			var cords = relMouseCoords(event);
+			p.push({"e" : "click", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement), "sc" : cords});
 		});
 		eventInject(document.body, 'keyup', function() {
 			p.push({"e" : "keyup", "keyCode" : event.keyCode, "ctrlKey" : event.ctrlKey, "altKey" : event.altKey, "shiftKey" : event.shiftKey, "srcElement" : getEleId(event.srcElement)});
@@ -60,12 +74,14 @@ var _pai = function(sid) {
 		_pai.oldY = null;
 		eventInject(document.body, 'mousemove', function() {
 			_pai.moveTimer && clearTimeout(_pai.moveTimer);
+			// TODO: 性能优化
 			var cx = event.clientX;
 			var cy = event.clientY;
+			var cords = relMouseCoords(event);
 			_pai.moveTimer = setTimeout(function() {
 				if (_pai.oldX != cx || _pai.oldY != cy) {
 					// TODO: 由250改成100是因为mousemove与click的反序问题，因为mouseevent是等待250不动之后才触发的，因此点击会先有，然后才有mousemove，改成100才能符合人类移动+点击的速度
-					p.push({"e" : "mousemove", "x" : cx, "y" : cy, "srcElement" : getEleId(document.elementFromPoint(cx, cy))}, -100);
+					p.push({"e" : "mousemove", "x" : cx, "y" : cy, "srcElement" : getEleId(document.elementFromPoint(cx, cy)), "sc" : cords}, -100);
 					_pai.oldX = cx;
 					_pai.oldY = cy;
 				}
