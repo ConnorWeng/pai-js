@@ -1,10 +1,10 @@
 <!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Strict//EN' 'http://www.w3.org/TR/html4/strict.dtd'>
 <html>
 <head>
+<meta http-equiv='Content-Type' content='text/html; charset=GBK' />
+<meta name="viewport" content="width=device-width" />
 <script type="text/javascript" src="pai.js"></script>
 <script type="text/javascript">var pai=new _pai();</script>
-<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-<meta name="viewport" content="width=device-width" />
 <title>test PAI</title>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript">
@@ -12,18 +12,18 @@ function initUI() {
 	console.log('CTP dummy initUI');
 }
 $(window).load(function(){
-	initUI(); //UI鍒濆鍖�
+	initUI(); //UI初始化
 });
 </script>
 </head>
 <body onload="console.log('CTP dummy body tag onload');">
 	<div>
-		<button onclick="pai.savelocal()">save</button>
-		<button onclick="pai.saveremote()">saveremote</button>
+		<button id='中文s1' onclick="pai.savelocal()">save</button>
+		<button id='中文s2' onclick="pai.saveremote()">saveremote</button>
 		<input id='ip' type=text value="abc"/>
 		<a onclick="window.location.href = '../angular/h.html'" href="a.html">adfadf</a>
 	</div>
-	<TEXTAREA id='ta' ROWS=5>ads
+	<TEXTAREA id='中文ta' ROWS=5>ads
 		sfd
 
 		sfd
@@ -34,7 +34,7 @@ $(window).load(function(){
 		fds
 	</TEXTAREA>
 	<br>
-	<iframe src="tester_in.html"></iframe>
+	<!--iframe src="tester_in.html"></iframe-->
 	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	<div>
