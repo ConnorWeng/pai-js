@@ -530,7 +530,11 @@ var _pai = function(sid) {
 		p.pa = [];
 	};
 	_pai.remoteURL = "http://kfzxhuangxlp:8080/test/pai"
+	_pai.saving = false;
 	p.saveremote = function() {
+		if (_pai.saving)
+			return;
+		_pai.saving = true;
 		p.savelocal();
 		console.log(window.localStorage.getItem("_pai"));
 		var r = new XMLHttpRequest();
@@ -540,10 +544,13 @@ var _pai = function(sid) {
 				return;
 			} else if (r.status != 200) {
 				console.log("ERROR WHEN saveremote! r.readyState=" + r.readyState + " r.status=" + r.status + " r.responseText=" + r.responseText);
+				_pai.saving = false;
 				return;
 			}
 			console.log(r.responseText);
+			// TODO: 可能会丢掉进入saveremote之后，才push进来的东西，pop2500条？
 			window.localStorage.removeItem("_pai");
+			_pai.saving = false;
 		}
 		r.send(window.localStorage.getItem("_pai"));
 	}
