@@ -1,6 +1,12 @@
 var _pai = function(sid) {
 	var p = this;
 	p.appid = window.location.protocol + '//' + window.location.hostname;
+	p.mid = window.localStorage.getItem('_pai_mid');
+	if (!p.mid) {
+		var S4 = function() { return (((1+Math.random())*0x10000)|0).toString(16).substring(1); }
+		p.mid = S4()+S4()+'-'+S4()+'-'+S4()+'-'+S4()+'-'+S4()+S4()+S4();
+		window.localStorage.setItem('_pai_mid', p.mid);
+	}
 	p.sid = sid ? sid : new Date().getTime() ;
 	p.pa = [];
 	p.push = function(obj, timeoff) {
@@ -16,7 +22,7 @@ var _pai = function(sid) {
 	p.savelocal = function() {
 		var op = JSON.parse(window.localStorage.getItem("_pai"));
 		if (!op) {
-			op = { "appid" : p.appid, "sessions" : [{"sid" : p.sid, "pa": p.pa}] };
+			op = { "appid" : p.appid, "mid": p.mid, "sessions" : [{"sid" : p.sid, "pa": p.pa}] };
 		} else {
 			var foundSession = null;
 			for (var i = op.sessions.length - 1; i >= 0; i--) {
