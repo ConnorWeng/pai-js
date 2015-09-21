@@ -580,7 +580,16 @@ var _pai = function(sid) {
 		};
 		eventInject(document.body, 'click', function() {
 			var cords = relMouseCoords(event);
-			p.push({"e" : "click", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement), "sc" : cords});
+			var pushevent = {"e" : "click", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement), "sc" : cords}
+			// CTP菜单项判断：
+			// 1、点在菜单的 A 元素上，<a title="用户管理" hideFocus="hidefocus" onclick="very long blarblar..." ondrag="return false;" href="#@">
+			if (typeof CTP_WEB_FULLPATH !== 'undefined') {
+				if (document.getElementsByName("signOffForm").length > 0) {
+					if (event.srcElement.hideFocus && event.srcElement.tagName === 'A')
+						pushevent.ctpmenu = event.srcElement.title;
+				}
+			}
+			p.push(pushevent);
 		});
 		eventInject(document.body, 'keyup', function() {
 			p.push({"e" : "keyup", "keyCode" : event.keyCode, "ctrlKey" : event.ctrlKey, "altKey" : event.altKey, "shiftKey" : event.shiftKey, "srcElement" : getEleId(event.srcElement)});
