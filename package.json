@@ -4,7 +4,9 @@
   "description": "",
   "main": "pai.js",
   "scripts": {
-    "test": "node node_modules/jshint/bin/jshint ./src ./test && karma start karma.conf.js"
+    "test": "node node_modules/jshint/bin/jshint ./src ./test && karma start karma.conf.js",
+    "prepack": "bash -c \"[ ! -d 'dist' ] && mkdir dist || echo 'dist directory exists'\"",
+    "pack": "node node_modules/uglify-js/bin/uglifyjs ./src/pai.js -o dist/pai.min.js --source-map dist/pai.min.js.map -c -m"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,7 @@
     "karma-chai": "^0.1.0",
     "mocha": "^2.3.1",
     "karma-mocha": "^0.2.0",
-    "jshint": "^2.8.0"
+    "jshint": "^2.8.0",
+    "uglify-js": "^2.4.24"
   }
 }
