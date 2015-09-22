@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Strict//EN' 'http://www.w3.org/TR/html4/strict.dtd'>
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<script>
+var eventInject = function(obj, eventname, func) {
+	if (obj.addEventListener) {
+		obj.addEventListener(eventname, func, false);
+	} else if (obj.attachEvent) {
+		obj.attachEvent("on" + eventname, func);
+	}
+};
+eventInject(window, 'message', function(e) {
+	var r = new XMLHttpRequest();
+	r.open('POST', '/test/pai', true);
+	r.onreadystatechange = function() {
+		if (r.readyState != 4) {
+			return;
+		} else if (r.status != 200) {
+			console.log("ERROR WHEN saveremote! r.readyState=" + r.readyState + " r.status=" + r.status + " r.responseText=" + r.responseText);
+			return;
+		}
+	}
+	r.send(e.data);
+});
+</script>
+</head>
+<body></body>
+</html>

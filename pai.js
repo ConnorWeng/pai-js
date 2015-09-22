@@ -529,7 +529,8 @@ var _pai = function(sid) {
 		window.localStorage.setItem("_pai", JSON.stringify(op));
 		p.pa = [];
 	};
-	_pai.remoteURL = "http://kfzxhuangxlp:8080/test/pai"
+	_pai.remoteURL = "http://kfzxhuangxlp:8080/";
+	_pai.remoteCORSHTML = _pai.remoteURL + "test/cors.htm";
 	_pai.saving = false;
 	p.saveremote = function() {
 		if (_pai.saving)
@@ -537,22 +538,21 @@ var _pai = function(sid) {
 		_pai.saving = true;
 		p.savelocal();
 		console.log(window.localStorage.getItem("_pai"));
-		var r = new XMLHttpRequest();
-		r.open('POST', _pai.remoteURL, true);
-		r.onreadystatechange = function() {
-			if (r.readyState != 4) {
-				return;
-			} else if (r.status != 200) {
-				console.log("ERROR WHEN saveremote! r.readyState=" + r.readyState + " r.status=" + r.status + " r.responseText=" + r.responseText);
+		
+		var ifr = document.createElement('iframe');
+		ifr.style.display = 'none';
+		document.body.appendChild(ifr);
+		var _load = function() {
+			try {
+				ifr.contentWindow.postMessage(window.localStorage.getItem("_pai"), '*');
+				window.localStorage.removeItem("_pai");
 				_pai.saving = false;
-				return;
+			} catch(e) {
+				console.log(e);
 			}
-			console.log(r.responseText);
-			// TODO: 可能会丢掉进入saveremote之后，才push进来的东西，pop2500条？
-			window.localStorage.removeItem("_pai");
-			_pai.saving = false;
 		}
-		r.send(window.localStorage.getItem("_pai"));
+		eventInject(ifr, 'load', _load);
+		ifr.src = _pai.remoteCORSHTML;
 	}
 	var eventInject = function(obj, eventname, func) {
 		if (obj.addEventListener) {
@@ -656,5 +656,6 @@ var _pai = function(sid) {
 		document.body.appendChild(bodyjs);
 	};
 	eventInject(window, 'load', p.domready);
+	// p.domready();
 	p.loadStart = new Date().getTime();
 };
