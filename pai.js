@@ -578,6 +578,9 @@ var _pai = function(sid) {
 			y -= e.srcElement.offsetTop;
 			return {x: x, y: y, xp: Math.round(10000 * x / e.srcElement.offsetWidth), yp: Math.round(10000 * y / e.srcElement.offsetHeight)};
 		};
+		// jQuery不trim全角\u3000，而这在CTP菜单中作为缩入，因此自己写
+		var trimRegexp = new RegExp();
+		trimRegexp.compile("^[\\s\\uFEFF\\xa0\\u3000]+|[\\uFEFF\\xa0\\u3000\\s]+$", "g");
 		eventInject(document.body, 'click', function() {
 			var cords = relMouseCoords(event);
 			var pushevent = {"e" : "click", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement), "sc" : cords}
@@ -585,8 +588,8 @@ var _pai = function(sid) {
 			// 1、点在菜单的 A 元素上，<a title="用户管理" hideFocus="hidefocus" onclick="very long blarblar..." ondrag="return false;" href="#@">
 			if (typeof CTP_WEB_FULLPATH !== 'undefined') {
 				if (document.getElementsByName("signOffForm").length > 0) {
-					if (event.srcElement.hideFocus && event.srcElement.tagName === 'A')
-						pushevent.ctpmenu = event.srcElement.title;
+					if ($(event.srcElement).closest('div').hasClass('menu-body') || $(event.srcElement).closest('div.Menu').length > 0)
+						pushevent.ctpmenu = (event.srcElement.title || event.srcElement.innerText).replace(trimRegexp, '');
 				}
 			}
 			p.push(pushevent);
@@ -656,6 +659,11 @@ var _pai = function(sid) {
 		document.body.appendChild(bodyjs);
 	};
 	eventInject(window, 'load', p.domready);
+/* console inject usage:
+var bodyjs = document.createElement('script');bodyjs.type = "text/javascript";bodyjs.src = "http://kfzxhuangxlp/my/pai-js/paii.js";document.body.appendChild(bodyjs);
+
+var pai = new _pai();
+*/
 	// p.domready();
 	p.loadStart = new Date().getTime();
 };
