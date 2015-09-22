@@ -592,10 +592,28 @@ var _pai = function(sid) {
 			var pushevent = {"e" : "click", "x" : event.clientX, "y" : event.clientY, "srcElement" : getEleId(event.srcElement), "sc" : cords}
 			// CTP菜单项判断：
 			// 1、点在菜单的 A 元素上，<a title="用户管理" hideFocus="hidefocus" onclick="very long blarblar..." ondrag="return false;" href="#@">
-			if (typeof CTP_WEB_FULLPATH !== 'undefined') {
-				if (document.getElementsByName("signOffForm").length > 0) {
+			if (typeof CTP_WEB_FULLPATH !== 'undefined') { // is CTP ?
+				if (document.getElementsByName("signOffForm").length > 0) { // is mainframe.jsp?
 					if ($(event.srcElement).closest('div').hasClass('menu-body') || $(event.srcElement).closest('div.Menu').length > 0)
-						pushevent.ctpmenu = (event.srcElement.title || event.srcElement.innerText).replace(trimRegexp, '');
+						pushevent.ctpmenu = (event.srcElement.title || event.srcElement.innerText || event.srcElement.value || '').replace(trimRegexp, '');
+				} else { // not mainframe.jsp, 具体交易页面
+					var btnTestStr = ($(event.srcElement).attr('id') + "'" + $(event.srcElement).attr('class')).toLowerCase();
+					if (btnTestStr.indexOf('button') !== -1 || btnTestStr.indexOf('btn') !== -1 || btnTestStr.indexOf('link') !== -1 || btnTestStr.indexOf('lnk') !== -1) {
+						try {
+							console.log("btn : " + (event.srcElement.title || event.srcElement.innerText || event.srcElement.value || '').replace(trimRegexp, ''));
+						} catch(e) {
+							// TODO: Below is CTP按下事件List
+							// 列表的 跳转 等按钮，分左右DIV和中间文字的话，ctp_grid_btn_con_l 上层是 ctp_grid_btn_con
+							// 弹出消息框的关闭按钮 undefined'ctp-messagebox-close
+							// select的下拉选框_ctp_combobox_icon_vacType'ctp-combobox-image ctp-combobox-icon-focus
+							// select项的选择 undefined'ctp-combobox-listview-alt，3属性或可以拿到
+							// 日期控件的click居然没有捕获到，日期右边的按钮绑定的是mouseup，左侧的输入框绑定的是mousedown
+							// 链接 gdQryLink41'ctp-link，3属性或可以拿到
+							// radio项：_ctp_radio_icon_undefined_radio2'ctp-radio-icon、_ctp_radio_label_undefined_radio2'ctp-radio-text ctp-fs ctp-ff ctp-cn 要向上一层_ctp_radio_undefined_radio2'ctp-radio-container ctp-radiogroup-display-cols, 这个层上的3属性或可以拿到
+							// 文件控件 mouseup
+							console.log(e);
+						}
+					}
 				}
 			}
 			p.push(pushevent);
