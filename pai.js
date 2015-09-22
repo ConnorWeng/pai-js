@@ -494,6 +494,12 @@ var _pai = function(sid) {
 	}
 	p.sid = sid ? sid : new Date().getTime() ;
 	p.pa = [];
+	// IE8 console未定义抑制
+	window.console = window.console || (function(){
+    	var c = {};
+    	c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.profile = c.clear = c.exception = c.trace = c.assert = function(s){};
+    	return c;
+    })();
 	p.push = function(obj, timeoff) {
 		var v = {
 			"t" : new Date().getTime() + (timeoff ? timeoff : 0),
