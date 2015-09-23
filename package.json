@@ -7,7 +7,7 @@
     "test": "bash -c \"export NODE_ENV=test && node node_modules/jshint/bin/jshint ./src ./test && node node_modules/mocha/bin/mocha --reporter=spec --recursive test/backend && karma start karma.conf.js\"",
     "testback": "bash -c \"export NODE_ENV=test && node node_modules/mocha/bin/mocha --reporter=spec --recursive test/backend\"",
     "prepack": "bash -c \"[ ! -d 'dist' ] && mkdir dist || rm dist/*.* && echo 'dist directory exists'\"",
-    "pack": "node node_modules/uglify-js/bin/uglifyjs ./src/frontend/pai.js -o dist/pai.min.js --source-map dist/pai.min.js.map -c -m",
+    "pack": "node node_modules/uglify-js/bin/uglifyjs ./src/frontend/json2.js ./src/frontend/pai.js -o dist/pai.min.js --source-map dist/pai.min.js.map -c -m",
     "serv": "bash -c \"export PAI_PORT=9898 && node src/backend/server.js\""
   },
   "repository": {
