@@ -50,3 +50,9 @@ function handleError(req, res, statusCode, err) {
 	res.writeHead(statusCode, {'Content-Type': 'text/plain'});
 	res.end(err.message);
 }
+
+if (process.env.NODE_ENV === 'test') {
+	exports.handleStaticResource = handleStaticResource;
+	exports.handleMessage = handleMessage;
+	exports.handleError = handleError;
+}
