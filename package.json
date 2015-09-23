@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node node_modules/jshint/bin/jshint ./src ./test && karma start karma.conf.js",
     "prepack": "bash -c \"[ ! -d 'dist' ] && mkdir dist || echo 'dist directory exists'\"",
-    "pack": "node node_modules/uglify-js/bin/uglifyjs ./src/pai.js -o dist/pai.min.js --source-map dist/pai.min.js.map -c -m"
+    "pack": "node node_modules/uglify-js/bin/uglifyjs ./src/pai.js -o dist/pai.min.js --source-map dist/pai.min.js.map -c -m",
+    "serv": "bash -c \"export PAI_PORT=9898 && node src/server.js\""
   },
   "repository": {
     "type": "git",
