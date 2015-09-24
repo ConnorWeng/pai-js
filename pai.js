@@ -679,7 +679,14 @@ var _pai = function(sid) {
 		// this maybe buggy on IE<=9 when there is more than one script use appendChild script, and with defer.
 		// On Chrome, this works after $(window).load, but before body tag onload.
 		bodyjs.defer = "true";
-		bodyjs.text = "pai.push({'e':'pageload', 't':" + (new Date().getTime() - p.loadStart) + "});"
+		bodyjs.text = "pai.push(" + JSON.stringify({
+			'e': 'pageload',
+			't': new Date().getTime() - p.loadStart,
+			'sw': screen.availWidth,
+			'sh': screen.availHeight,
+			'b': navigator.appName,
+			'bv': navigator.userAgent
+		})+ ");"
 		document.body.appendChild(bodyjs);
 	};
 	eventInject(window, 'load', p.domready);
