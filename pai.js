@@ -682,8 +682,9 @@ var _pai = function(sid) {
 		bodyjs.text = "pai.push(" + JSON.stringify({
 			'e': 'pageload',
 			't': new Date().getTime() - p.loadStart,
-			'sw': screen.availWidth,
-			'sh': screen.availHeight,
+			"viewport": getViewPortSize(),
+			'screen': [screen.availWidth, screen.availHeight],
+			'pos': [window.screenLeft, window.screenTop],
 			'b': navigator.appName,
 			'bv': navigator.userAgent
 		})+ ");"
