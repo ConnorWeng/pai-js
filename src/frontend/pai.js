@@ -50,7 +50,7 @@ var _pai = function(sid) {
 		window.localStorage.setItem("_pai", JSON.stringify(op));
 		p.pa = [];
 	};
-	_pai.remoteURL = "http://" + PAI_HOST + ":" + PAI_PORT;
+	_pai.remoteURL = "http://" + REMOTE_URL + ":" + PAI_PORT;
 	_pai.remoteCORSHTML = _pai.remoteURL + "/cors.htm";
 	_pai.saving = false;
 	p.saveremote = function() {
@@ -179,7 +179,7 @@ var _pai = function(sid) {
 			// TODO: 级联resize会被触发么？需不需要只挂在top上？但这样内部的可调大小的事件是不是就没有了？
 			_pai.resizeTimer && clearTimeout(_pai.resizeTimer);
 			_pai.resizeTimer = setTimeout(function() {
-				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screen" : [screen.width, screen.height], "pos" : [window.screenLeft, window.screenTop]});
+				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screen" : [screen.availWidth, screen.availHeight], "pos" : [window.screenLeft, window.screenTop]});
 			}, 250);
 		});
 		eventInject(window, 'unload', function() {
@@ -194,7 +194,15 @@ var _pai = function(sid) {
 		// this maybe buggy on IE<=9 when there is more than one script use appendChild script, and with defer.
 		// On Chrome, this works after $(window).load, but before body tag onload.
 		bodyjs.defer = "true";
-		bodyjs.text = "pai.push({'e':'pageload', 't':" + (new Date().getTime() - p.loadStart) + "});";
+		bodyjs.text = "pai.push(" + JSON.stringify({
+			'e': 'pageload',
+			't': new Date().getTime() - p.loadStart,
+			"viewport": getViewPortSize(),
+			'screen': [screen.availWidth, screen.availHeight],
+			'pos': [window.screenLeft, window.screenTop],
+			'b': navigator.appName,
+			'bv': navigator.userAgent
+		})+ ");";
 		document.body.appendChild(bodyjs);
 	};
 	eventInject(window, 'load', p.domready);
