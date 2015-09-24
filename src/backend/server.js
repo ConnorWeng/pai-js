@@ -20,14 +20,22 @@ http.createServer(function(req, res) {
 	var next = function(err, statusCode) {
 		if (err) handleError(req, res, statusCode, err);
 	};
-	var i = 0;
-	for(; i < HANDLERS.length; i++) {
-		var handler = HANDLERS[i];
-		if (handler(req, res, next)) break;
-	}
-	if (i === HANDLERS.length) {
-		handleError(req, res, 500, new Error('no handler for this request'));
-	}
+	req.setEncoding('utf8');
+	var data = '';
+	req.on('data', function(chunck) {
+		data += chunck;
+	});
+	req.on('end', function() {
+		req.body = data;
+		var i = 0;
+		for(; i < HANDLERS.length; i++) {
+			var handler = HANDLERS[i];
+			if (handler(req, res, next)) break;
+		}
+		if (i === HANDLERS.length) {
+			handleError(req, res, 500, new Error('no handler for this request'));
+		}
+	});
 }).listen(process.env.PAI_PORT || 9999);
 
 function handleStaticResource(req, res, next) {
@@ -43,7 +51,13 @@ function handleStaticResource(req, res, next) {
 }
 
 function handleMessage(req, res, next) {
-	return false;
+	if (req.method !== 'POST') return false;
+	fs.appendFile(resolvePath('./message.log'), req.body + '\n', function(err) {
+		if (err) next(err, 500);
+		res.writeHead(200, {'Content-Type': 'text/json'});
+		res.end('{"success": true}');
+	});
+	return true;
 }
 
 function handleError(req, res, statusCode, err) {
