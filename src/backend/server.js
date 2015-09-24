@@ -36,7 +36,7 @@ http.createServer(function(req, res) {
 			handleError(req, res, 500, new Error('no handler for this request'));
 		}
 	});
-}).listen(process.env.PAI_PORT || 9999);
+}).listen(process.env.PAI_PORT || 9898);
 
 function handleStaticResource(req, res, next) {
 	var path = parseUrl(req.url).path.substr(1);
