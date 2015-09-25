@@ -4,6 +4,7 @@
   "description": "",
   "main": "pai.js",
   "scripts": {
+    "preinstall": "node install.js",
     "test": "bash -c \"export NODE_ENV=test && node node_modules/jshint/bin/jshint ./src ./test && node node_modules/mocha/bin/mocha --reporter=spec --recursive test/backend && karma start karma.conf.js\"",
     "testback": "bash -c \"export NODE_ENV=test && node node_modules/mocha/bin/mocha --reporter=spec --recursive test/backend\"",
     "build": "node build.js",
