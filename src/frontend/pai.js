@@ -53,27 +53,34 @@ var _pai = function(sid) {
 	_pai.remoteURL = "http://" + PAI_HOST + ":" + PAI_PORT;
 	_pai.remoteCORSHTML = _pai.remoteURL + "/cors.htm";
 	_pai.saving = false;
+	var ifr = null; // find&see: onbeforeunload在顶层页面预注入
 	p.saveremote = function() {
 		if (_pai.saving)
 			return;
 		_pai.saving = true;
-		p.savelocal();
+		if (p.pa.length > 0)
+			p.savelocal();
 		console.log(window.localStorage.getItem("_pai"));
-		
-		var ifr = document.createElement('iframe');
-		ifr.style.display = 'none';
-		document.body.appendChild(ifr);
-		var _load = function() {
-			try {
-				ifr.contentWindow.postMessage(window.localStorage.getItem("_pai"), '*');
-				window.localStorage.removeItem("_pai");
-				_pai.saving = false;
-			} catch(e) {
-				console.log(e);
-			}
-		};
-		eventInject(ifr, 'load', _load);
-		ifr.src = _pai.remoteCORSHTML;
+		if (ifr === null) {
+			ifr = document.createElement('iframe');
+			ifr.style.display = 'none';
+			document.body.appendChild(ifr);
+			var _load = function() {
+				try {
+					ifr.contentWindow.postMessage(window.localStorage.getItem("_pai"), '*');
+					window.localStorage.removeItem("_pai");
+					_pai.saving = false;
+				} catch(e) {
+					console.log(e);
+				}
+			};
+			eventInject(ifr, 'load', _load);
+			ifr.src = _pai.remoteCORSHTML;
+		} else {
+			ifr.contentWindow.postMessage(window.localStorage.getItem("_pai"), '*');
+			window.localStorage.removeItem("_pai");
+			_pai.saving = false;
+		}
 	};
 	var eventInject = function(obj, eventname, func) {
 		if (obj.addEventListener) {
@@ -182,8 +189,16 @@ var _pai = function(sid) {
 				p.push({"e" : "resize", "viewport" : getViewPortSize(), "screen" : [screen.availWidth, screen.availHeight], "pos" : [window.screenLeft, window.screenTop]});
 			}, 250);
 		});
+		// onbeforeunload在顶层页面预注入
+		if (window.parent == window) {
+			ifr = document.createElement('iframe');
+			ifr.style.display = 'none';
+			document.body.appendChild(ifr);
+			ifr.src = _pai.remoteCORSHTML;
+		}
 		eventInject(window, 'unload', function() {
 			p.push({"e" : "unload"});
+			p.savelocal();
 			if (window.parent == window)
 				p.saveremote();
 		});
