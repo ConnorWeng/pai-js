@@ -3,7 +3,7 @@ var fs = require('fs');
 var parseUrl = require('url').parse;
 var resolvePath = require('path').resolve;
 
-var STATIC_RESOURCE_EXTS = ['js', 'css', 'html', 'htm', 'jpge', 'jpg', 'png', 'ico'];
+var STATIC_RESOURCE_EXTS = ['js', 'css', 'html', 'htm', 'jpge', 'jpg', 'png', 'ico', 'map'];
 var RESOURCE_TYPE_MAP = {
 	'js': 'text/javascript',
 	'css': 'text/stylesheet',
@@ -12,7 +12,8 @@ var RESOURCE_TYPE_MAP = {
 	'jpeg': 'image/jpeg',
 	'jpg': 'image/jpeg',
 	'png': 'image/png',
-	'ico': 'image/ico'
+	'ico': 'image/ico',
+	'map': 'text/javascript'
 };
 var HANDLERS = [handleStaticResource, handleMessage];
 

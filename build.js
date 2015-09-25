@@ -13,7 +13,7 @@ fs.writeFileSync(resolvePath('./const.js'), [
 	'var PAI_PORT = "' + PAI_PORT + '";'
 ].join('\n'));
 
-var buildProcess = spawn('node', ['node_modules/uglify-js/bin/uglifyjs', './const.js', './src/frontend/json2.js', './src/frontend/pai.js', '-o', 'dist/pai.min.js', '--source-map', 'dist/pai.min.js.map', '-c', '-m']);
+var buildProcess = spawn('node', ['node_modules/uglify-js/bin/uglifyjs', './const.js', './src/frontend/json2.js', './src/frontend/pai.js', '-o', 'dist/pai.min.js', '--source-map', 'dist/pai.min.js.map', '-c', '-m', '--source-map-url', 'http://' + PAI_HOST + ':' + PAI_PORT + '/dist/pai.min.js.map', '--source-map-root', '/']);
 
 buildProcess.stdout.on('data', function(data) {
 	console.log(data.toString());
