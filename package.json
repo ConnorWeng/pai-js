@@ -1,0 +1,29 @@
+{
+  "name": "pai-js",
+  "version": "0.0.0",
+  "description": "",
+  "main": "pai.js",
+  "scripts": {
+    "preinstall": "node install.js",
+    "test": "bash -c \"export NODE_ENV=test && node node_modules/jshint/bin/jshint ./src ./test && node node_modules/mocha/bin/mocha --reporter=spec --recursive test/backend && karma start karma.conf.js\"",
+    "testback": "bash -c \"export NODE_ENV=test && node node_modules/mocha/bin/mocha --reporter=spec --recursive test/backend\"",
+    "build": "node build.js",
+    "serv": "node src/backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.sdc.icbc:000831501/pai-js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "chai": "^3.2.0",
+    "karma-chai": "^0.1.0",
+    "mocha": "^2.3.1",
+    "karma-mocha": "^0.2.0",
+    "jshint": "^2.8.0",
+    "uglify-js": "^2.4.24"
+  }
+}
