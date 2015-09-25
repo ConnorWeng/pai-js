@@ -50,7 +50,7 @@ var _pai = function(sid) {
 		window.localStorage.setItem("_pai", JSON.stringify(op));
 		p.pa = [];
 	};
-	_pai.remoteURL = "http://" + REMOTE_URL + ":" + PAI_PORT;
+	_pai.remoteURL = "http://" + PAI_HOST + ":" + PAI_PORT;
 	_pai.remoteCORSHTML = _pai.remoteURL + "/cors.htm";
 	_pai.saving = false;
 	p.saveremote = function() {
