@@ -9,8 +9,8 @@ deleteFolderRecursive(resolvePath('./dist'));
 fs.mkdirSync(resolvePath('./dist'));
 
 fs.writeFileSync(resolvePath('./const.js'), [
-	'const PAI_HOST = "' + PAI_HOST + '";',
-	'const PAI_PORT = "' + PAI_PORT + '";'
+	'var PAI_HOST = "' + PAI_HOST + '";',
+	'var PAI_PORT = "' + PAI_PORT + '";'
 ].join('\n'));
 
 var buildProcess = spawn('node', ['node_modules/uglify-js/bin/uglifyjs', './const.js', './src/frontend/json2.js', './src/frontend/pai.js', '-o', 'dist/pai.min.js', '--source-map', 'dist/pai.min.js.map', '-c', '-m']);
