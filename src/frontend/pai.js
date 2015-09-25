@@ -220,12 +220,14 @@ var _pai = function(sid) {
 		})+ ");";
 		document.body.appendChild(bodyjs);
 	};
-	eventInject(window, 'load', p.domready);
-/* console inject usage:
-var bodyjs = document.createElement('script');bodyjs.type = "text/javascript";bodyjs.src = "http://kfzxhuangxlp/my/pai-js/paii.js";document.body.appendChild(bodyjs);
-
-var pai = new _pai();
-*/
-	// p.domready();
+	/* console inject usage:
+	 * var bodyjs = document.createElement('script');bodyjs.type = "text/javascript";bodyjs.src = "http://kfzxhuangxlp/my/pai-js/paii.js";document.body.appendChild(bodyjs);
+	 * var pai = new _pai();
+	 */
+	if (CONSOLE_INJECT) {
+		p.domready();
+	} else {
+		eventInject(window, 'load', p.domready);
+	}
 	p.loadStart = new Date().getTime();
 };
