@@ -5,6 +5,11 @@ var spawn = require('child_process').spawn;
 
 var NODE_MODULES_URL = 'http://gitlab.sdc.icbc/000831501/pai-js-node_modules/raw/master/node_modules.zip';
 
+if (fs.existsSync(resolvePath('./node_modules'))) {
+	console.log('node_modules exists, no need to download');
+	process.exit(0);
+}
+
 console.log('downloading node_modules...');
 
 http.get(NODE_MODULES_URL, function(req, res) {
