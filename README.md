@@ -16,7 +16,8 @@ export PAI_PORT=xxxx             # 默认9898
 
 在git bash中执行:
 
-- npm test: 运行所有测试(需联网，更新chrome driver)
+- npm install: 安装所有项目依赖(无需联外网，自动从gitlab下载)
+- npm test: 运行所有测试(需联外网，更新chrome driver)
 - npm run build: 构建
 - npm run serv: 启服务器
 
@@ -27,9 +28,9 @@ export PAI_PORT=xxxx             # 默认9898
 ## 普通网站 ##
 
 ```html
-<script type="text/javascript" src="http://127.0.0.1/dist/pai.min.js"/>
+<script type="text/javascript" src="http://127.0.0.1:9898/dist/pai.min.js"/>
 <script>
-var pai = new _pai(SESS_ID);
+var pai = new _pai(<网站的session id, 不传也可以>);
 </script>
 ```
 
