@@ -8,6 +8,7 @@ var _pai = function(sid) {
 		window.localStorage.setItem('_pai_mid', p.mid);
 	}
 	p.sid = sid;
+	p.uid = undefined;
 	p.pa = [];
 	// IE8 console未定义抑制
 	window.console = window.console || (function(){
@@ -23,6 +24,8 @@ var _pai = function(sid) {
 		};
 		console.log(JSON.stringify(v));
 		p.pa.push(v);
+		// TODO: uid在2500提交之后会掉
+		// TODO: 针对多窗口同域名、不同会话，2500提交后的情况需要针对性验证
 		if (p.pa.length > 2500) {
 			p.saveremote();
 		}
@@ -31,7 +34,7 @@ var _pai = function(sid) {
 	p.savelocal = function() {
 		var op = JSON.parse(window.localStorage.getItem("_pai"));
 		if (!op) {
-			op = { "appid" : p.appid, "mid": p.mid, "sessions" : [{"sid" : p.sid, "pa": p.pa}] };
+			op = { "appid" : p.appid, "mid": p.mid, "sessions" : [{"sid" : p.sid, "uid" : p.uid, "pa": p.pa}] };
 		} else {
 			var foundSession = null;
 			for (var i = op.sessions.length - 1; i >= 0; i--) {
@@ -43,7 +46,7 @@ var _pai = function(sid) {
 			if (foundSession) {
 				foundSession.pa.push(p.pa);
 			} else {
-				op.sessions.push({"sid" : p.sid, "pa": p.pa});
+				op.sessions.push({"sid" : p.sid, "uid" : p.uid, "pa": p.pa});
 			}
 		}
 		console.log(JSON.stringify(op));
