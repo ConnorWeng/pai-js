@@ -7,7 +7,7 @@ var _pai = function(sid) {
 		p.mid = S4()+S4()+'-'+S4()+'-'+S4()+'-'+S4()+'-'+S4()+S4()+S4();
 		window.localStorage.setItem('_pai_mid', p.mid);
 	}
-	p.sid = sid ? sid : (document.getElementsByName('dse_sessionId')[0] ? document.getElementsByName('dse_sessionId')[0].value : new Date().getTime());
+	p.sid = sid;
 	p.pa = [];
 	// IE8 console未定义抑制
 	window.console = window.console || (function(){
@@ -90,6 +90,9 @@ var _pai = function(sid) {
 		}
 	};
 	p.domready = function() {
+		if (!p.sid) {
+			p.sid = document.getElementsByName('dse_sessionId')[0] ? document.getElementsByName('dse_sessionId')[0].value : new Date().getTime();
+		}
 		var getEleId = function(ele) {
 			return ele && (ele.id || ele.name || ele.tagName);
 		};
