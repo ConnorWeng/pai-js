@@ -90,6 +90,13 @@ var _pai = function(sid) {
 		}
 	};
 	p.domready = function() {
+		if (document.getElementById("menutree")) {
+			var mtsrc = document.getElementById("menutree").src;
+			var sidmatches = mtsrc.match(/dse_sessionId=([^&]+)/i);
+			var uidmatches = mtsrc.match(/userId=([^&]+)/i);
+			if (!p.sid && sidmatches) p.sid = sidmatches[1];
+			if (!p.uid && uidmatches) p.uid = uidmatches[1];
+		}
 		if (!p.sid) {
 			p.sid = document.getElementsByName('dse_sessionId')[0] ? document.getElementsByName('dse_sessionId')[0].value : new Date().getTime();
 		}
