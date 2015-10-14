@@ -49,3 +49,14 @@ public int doEndTag() throws JspException {
     return EVAL_PAGE;
 }
 ```
+
+# 注入测试 #
+
+在console中分两行执行：
+
+```javascript
+var bodyjs = document.createElement('script');bodyjs.type = "text/javascript";bodyjs.src = "http://107.252.77.230:9898/dist/pai-inject.js";document.body.appendChild(bodyjs);
+```
+```javascript
+var pai = new _pai();
+```
