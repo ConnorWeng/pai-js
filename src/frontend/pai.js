@@ -219,7 +219,7 @@ var _pai = function(sid) {
                 try {
                     ifr.contentWindow.postMessage(JSON.stringify({
                         "appid": savedpai.appid,
-                        "mid": savedpai.mid
+                        "mid": savedpai.mid,
                         "sessions": sessions2send
                     }), "*");
                 } catch (e) {
