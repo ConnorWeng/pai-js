@@ -206,14 +206,42 @@ var _pai = function(sid) {
 		if (window.parent == window) {
 			ifr = document.createElement('iframe');
 			ifr.style.display = 'none';
-			document.body.appendChild(ifr);
+			eventInject(ifr, 'onload', function() {
+                // TODO: 提交上次进入时，ie>8、非ie的未提交内容
+                var savedpai = JSON.parse(window.localStorage.getItem("_pai"));
+                var savedsessions = savedpai.sessions;
+                var sessions2send = [];
+                for (var i = 0; i < savedsessions.length; i++) {
+                    if (savedsessions[i].sid != p.sid) {
+                        sessions2send.push(savedsessions[i]);
+                    }
+                }
+                try {
+                    ifr.contentWindow.postMessage(JSON.stringify({
+                        "appid": savedpai.appid,
+                        "mid": savedpai.mid
+                        "sessions": sessions2send
+                    }), "*");
+                } catch (e) {
+                    console.log(e);
+                }
+                for (var i = savedsessions.length - 1; i >= 0; i--) {
+                    if (savedsessions[i].sid != p.sid) {
+                        savedsessions.splice(i, 1);
+                    }
+                }
+                window.localStorage.setItem("_pai", savedpai);
+            });
 			ifr.src = _pai.remoteCORSHTML;
+			document.body.appendChild(ifr);
 		}
 		eventInject(window, 'unload', function() {
 			p.push({"e" : "unload"});
 			p.savelocal();
-			if (window.parent == window)
-				p.saveremote();
+            // 当ie>8或非ie时，通过beforeunload进行ajax提交数据不会成功，因此不做saveremote及清除数据，待下次进入或长时间等待后的重动时提交
+            var ie8 = !-[1,];
+            if (window.parent == window && ie8)
+              p.saveremote();
 		});
 		// TODO: DIV、TEXTAREA等的onscroll没有截取到（不冒泡），iframe的有截取到
 		// TODO: onfocus（不冒泡）如果记录了mousemove和keyuptab，是不是可以认为就是可以区分focus了
@@ -222,7 +250,7 @@ var _pai = function(sid) {
 		// this maybe buggy on IE<=9 when there is more than one script use appendChild script, and with defer.
 		// On Chrome, this works after $(window).load, but before body tag onload.
 		bodyjs.defer = "true";
-		bodyjs.text = "pai.push(" + JSON.stringify({
+		bodyjs.text = "if (pai) {pai.push(" + JSON.stringify({
 			'e': 'pageload',
 			't': new Date().getTime() - p.loadStart,
 			"viewport": getViewPortSize(),
@@ -230,7 +258,7 @@ var _pai = function(sid) {
 			'pos': [window.screenLeft, window.screenTop],
 			'b': navigator.appName,
 			'bv': navigator.userAgent
-		})+ ");";
+		})+ ")};";
 		document.body.appendChild(bodyjs);
 	};
 	/* console inject usage:
