@@ -239,7 +239,7 @@ var _pai = function(sid) {
 			p.push({"e" : "unload"});
 			p.savelocal();
             // 当ie>8或非ie时，通过beforeunload进行ajax提交数据不会成功，因此不做saveremote及清除数据，待下次进入或长时间等待后的重动时提交
-            var ie8 = !-[1,];
+            var ie8 = eval("!-[1,]");
             if (window.parent == window && ie8)
               p.saveremote();
 		});
