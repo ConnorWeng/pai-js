@@ -22,7 +22,7 @@ var _pai = function(sid) {
 			"p" : location.pathname,
 			"v" : obj
 		};
-		console.log(JSON.stringify(v));
+		console.log(JSON.stringifypai(v));
 		p.pa.push(v);
 		// TODO: uid在2500提交之后会掉
 		// TODO: 针对多窗口同域名、不同会话，2500提交后的情况需要针对性验证
@@ -49,8 +49,8 @@ var _pai = function(sid) {
 				op.sessions.push({"sid" : p.sid, "uid" : p.uid, "pa": p.pa});
 			}
 		}
-		console.log(JSON.stringify(op));
-		window.localStorage.setItem("_pai", JSON.stringify(op));
+		console.log(JSON.stringifypai(op));
+		window.localStorage.setItem("_pai", JSON.stringifypai(op));
 		p.pa = [];
 	};
 	_pai.remoteURL = "http://" + PAI_HOST + ":" + PAI_PORT;
@@ -206,10 +206,14 @@ var _pai = function(sid) {
 		if (window.parent == window) {
 			ifr = document.createElement('iframe');
 			ifr.style.display = 'none';
-			eventInject(ifr, 'onload', function() {
-                // TODO: 提交上次进入时，ie>8、非ie的未提交内容
-                var savedpai = JSON.parse(window.localStorage.getItem("_pai"));
+            ifr.onload = function() {
+                var savedpai = window.localStorage.getItem("_pai");
+                if (!savedpai)
+                    return;
+                savedpai = JSON.parse(savedpai);
                 var savedsessions = savedpai.sessions;
+                if (!savedsessions || savedsessions.length == 0)
+                    return;
                 var sessions2send = [];
                 for (var i = 0; i < savedsessions.length; i++) {
                     if (savedsessions[i].sid != p.sid) {
@@ -217,7 +221,7 @@ var _pai = function(sid) {
                     }
                 }
                 try {
-                    ifr.contentWindow.postMessage(JSON.stringify({
+                    ifr.contentWindow.postMessage(JSON.stringifypai({
                         "appid": savedpai.appid,
                         "mid": savedpai.mid,
                         "sessions": sessions2send
@@ -230,8 +234,8 @@ var _pai = function(sid) {
                         savedsessions.splice(i, 1);
                     }
                 }
-                window.localStorage.setItem("_pai", savedpai);
-            });
+                window.localStorage.setItem("_pai", JSON.stringifypai(savedpai));
+            };
 			ifr.src = _pai.remoteCORSHTML;
 			document.body.appendChild(ifr);
 		}
@@ -250,7 +254,7 @@ var _pai = function(sid) {
 		// this maybe buggy on IE<=9 when there is more than one script use appendChild script, and with defer.
 		// On Chrome, this works after $(window).load, but before body tag onload.
 		bodyjs.defer = "true";
-		bodyjs.text = "if (pai) {pai.push(" + JSON.stringify({
+		bodyjs.text = "if (pai) {pai.push(" + JSON.stringifypai({
 			'e': 'pageload',
 			't': new Date().getTime() - p.loadStart,
 			"viewport": getViewPortSize(),
