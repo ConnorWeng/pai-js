@@ -85,6 +85,7 @@
             return v;
         }
     }
+	JSON = typeof JSON === 'undefined' ? {} : JSON;
     if (typeof JSON.stringifypai !== "function") {
         meta = {
             "\b": "\\b",
