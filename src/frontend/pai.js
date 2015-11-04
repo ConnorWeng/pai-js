@@ -44,7 +44,7 @@ var _pai = function(sid) {
 				}
 			}
 			if (foundSession) {
-				foundSession.pa.push(p.pa);
+				foundSession.pa = foundSession.pa.concat(p.pa);
 			} else {
 				op.sessions.push({"sid" : p.sid, "uid" : p.uid, "pa": p.pa});
 			}
