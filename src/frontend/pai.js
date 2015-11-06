@@ -19,7 +19,7 @@ var _pai = function(sid) {
 	p.push = function(obj, timeoff) {
 		var v = {
 			"t" : new Date().getTime() + (timeoff ? timeoff : 0),
-			"p" : location.pathname,
+			"p" : location.pathname + location.search + (nowPage ? ("#larvapage=" + nowPage) : ""),
 			"v" : obj
 		};
 		console.log(JSON.stringifypai(v));
