@@ -1,4 +1,4 @@
-// force use douglascrockford's JSON.stringify -> JSON.stringifypai, avoid Prototype JSON.stringify bug.
+// force use douglascrockford's JSON.stringify -> JSONPAI.stringifypai, avoid Prototype JSON.stringify bug.
 // http://stackoverflow.com/questions/710586/json-stringify-array-bizarreness-with-prototype-js
 (function() {
     "use strict";
@@ -85,8 +85,8 @@
             return v;
         }
     }
-	JSON = typeof JSON === 'undefined' ? {} : JSON;
-    if (typeof JSON.stringifypai !== "function") {
+	JSONPAI = typeof JSONPAI === 'undefined' ? {} : JSONPAI;
+    if (typeof JSONPAI.stringifypai !== "function") {
         meta = {
             "\b": "\\b",
             "   ": "\\t",
@@ -96,7 +96,7 @@
             '"': '\\"',
             "\\": "\\\\"
         };
-        JSON.stringifypai = function(value, replacer, space) {
+        JSONPAI.stringifypai = function(value, replacer, space) {
             var i;
             gap = "";
             indent = "";
@@ -109,15 +109,15 @@
             }
             rep = replacer;
             if (replacer && typeof replacer !== "function" && (typeof replacer !== "object" || typeof replacer.length !== "number")) {
-                throw new Error("JSON.stringifypai");
+                throw new Error("JSONPAI.stringifypai");
             }
             return str("", {
                 "": value
             });
         };
     }
-    if (typeof JSON.parse !== "function") {
-        JSON.parse = function(text, reviver) {
+    if (typeof JSONPAI.parse !== "function") {
+        JSONPAI.parse = function(text, reviver) {
             var j;
             function walk(holder, key) {
                 var k, v, value = holder[key];
@@ -148,7 +148,7 @@
                     "": j
                 }, "") : j;
             }
-            throw new SyntaxError("JSON.parse");
+            throw new SyntaxError("JSONPAI.parse");
         };
     }
 })();

@@ -22,7 +22,7 @@ var _pai = function(sid) {
             "p" : location.pathname + location.search + (typeof(nowPage) !== 'undefined' ? ("#larvapage=" + nowPage) : ""),
             "v" : obj
         };
-        console.log(JSON.stringifypai(v));
+        console.log(JSONPAI.stringifypai(v));
         p.pa.push(v);
         // TODO: uid在2500提交之后会掉
         // TODO: 针对多窗口同域名、不同会话，2500提交后的情况需要针对性验证
@@ -32,7 +32,7 @@ var _pai = function(sid) {
         return p;
     };
     p.savelocal = function() {
-        var op = JSON.parse(window.localStorage.getItem("_pai"));
+        var op = JSONPAI.parse(window.localStorage.getItem("_pai"));
         if (!op) {
             op = { "appid" : p.appid, "mid": p.mid, "sessions" : [{"sid" : p.sid, "uid" : p.uid, "pa": p.pa}] };
         } else {
@@ -49,8 +49,8 @@ var _pai = function(sid) {
                 op.sessions.push({"sid" : p.sid, "uid" : p.uid, "pa": p.pa});
             }
         }
-        console.log(JSON.stringifypai(op));
-        window.localStorage.setItem("_pai", JSON.stringifypai(op));
+        console.log(JSONPAI.stringifypai(op));
+        window.localStorage.setItem("_pai", JSONPAI.stringifypai(op));
         p.pa = [];
     };
     _pai.remoteURL = "http://" + PAI_HOST + ":" + PAI_PORT;
@@ -210,7 +210,7 @@ var _pai = function(sid) {
                 var savedpai = window.localStorage.getItem("_pai");
                 if (!savedpai)
                     return;
-                savedpai = JSON.parse(savedpai);
+                savedpai = JSONPAI.parse(savedpai);
                 var savedsessions = savedpai.sessions;
                 if (!savedsessions || savedsessions.length == 0)
                     return;
@@ -221,7 +221,7 @@ var _pai = function(sid) {
                     }
                 }
                 try {
-                    ifr.contentWindow.postMessage(JSON.stringifypai({
+                    ifr.contentWindow.postMessage(JSONPAI.stringifypai({
                         "appid": savedpai.appid,
                         "mid": savedpai.mid,
                         "sessions": sessions2send
@@ -234,7 +234,7 @@ var _pai = function(sid) {
                         savedsessions.splice(i, 1);
                     }
                 }
-                window.localStorage.setItem("_pai", JSON.stringifypai(savedpai));
+                window.localStorage.setItem("_pai", JSONPAI.stringifypai(savedpai));
             };
             ifr.src = _pai.remoteCORSHTML;
             document.body.appendChild(ifr);
@@ -254,7 +254,7 @@ var _pai = function(sid) {
         // this maybe buggy on IE<=9 when there is more than one script use appendChild script, and with defer.
         // On Chrome, this works after $(window).load, but before body tag onload.
         bodyjs.defer = "true";
-        bodyjs.text = "if (pai) {pai.push(" + JSON.stringifypai({
+        bodyjs.text = "if (pai) {pai.push(" + JSONPAI.stringifypai({
             'e': 'pageload',
             't': new Date().getTime() - p.loadStart,
             "viewport": getViewPortSize(),
