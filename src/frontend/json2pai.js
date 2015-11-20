@@ -85,7 +85,7 @@
             return v;
         }
     }
-	JSONPAI = typeof JSONPAI === 'undefined' ? {} : JSONPAI;
+	var JSONPAI = {};
     if (typeof JSONPAI.stringifypai !== "function") {
         meta = {
             "\b": "\\b",
