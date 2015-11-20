@@ -85,7 +85,7 @@
             return v;
         }
     }
-	var JSONPAI = {};
+	window.JSONPAI = {};
     if (typeof JSONPAI.stringifypai !== "function") {
         meta = {
             "\b": "\\b",
