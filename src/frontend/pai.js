@@ -1,4 +1,6 @@
 var _pai = function(sid) {
+    var paijsonstringify = (JSON.stringify.toString().indexOf("[native code]") != -1) ? JSON.stringify : JSONPAI.stringifypai;
+    var paijsonparse = (JSON.parse.toString().indexOf("[native code]") != -1) ? JSON.parse : JSONPAI.parse;
     var p = this;
     p.appid = window.location.protocol + '//' + window.location.hostname;
     p.mid = window.localStorage.getItem('_pai_mid');
@@ -22,7 +24,7 @@ var _pai = function(sid) {
             "p" : location.pathname + location.search + (typeof(nowPage) !== 'undefined' ? ("#larvapage=" + nowPage) : ""),
             "v" : obj
         };
-        console.log(JSONPAI.stringifypai(v));
+        console.log(paijsonstringify(v));
         p.pa.push(v);
         // TODO: uid在2500提交之后会掉
         // TODO: 针对多窗口同域名、不同会话，2500提交后的情况需要针对性验证
@@ -32,7 +34,7 @@ var _pai = function(sid) {
         return p;
     };
     p.savelocal = function() {
-        var op = JSONPAI.parse(window.localStorage.getItem("_pai"));
+        var op = paijsonparse(window.localStorage.getItem("_pai"));
         if (!op) {
             op = { "appid" : p.appid, "mid": p.mid, "sessions" : [{"sid" : p.sid, "uid" : p.uid, "pa": p.pa}] };
         } else {
@@ -49,8 +51,8 @@ var _pai = function(sid) {
                 op.sessions.push({"sid" : p.sid, "uid" : p.uid, "pa": p.pa});
             }
         }
-        console.log(JSONPAI.stringifypai(op));
-        window.localStorage.setItem("_pai", JSONPAI.stringifypai(op));
+        console.log(paijsonstringify(op));
+        window.localStorage.setItem("_pai", paijsonstringify(op));
         p.pa = [];
     };
     _pai.remoteURL = "http://" + PAI_HOST + ":" + PAI_PORT;
@@ -210,7 +212,7 @@ var _pai = function(sid) {
                 var savedpai = window.localStorage.getItem("_pai");
                 if (!savedpai)
                     return;
-                savedpai = JSONPAI.parse(savedpai);
+                savedpai = paijsonparse(savedpai);
                 var savedsessions = savedpai.sessions;
                 if (!savedsessions || savedsessions.length == 0)
                     return;
@@ -221,7 +223,7 @@ var _pai = function(sid) {
                     }
                 }
                 try {
-                    ifr.contentWindow.postMessage(JSONPAI.stringifypai({
+                    ifr.contentWindow.postMessage(paijsonstringify({
                         "appid": savedpai.appid,
                         "mid": savedpai.mid,
                         "sessions": sessions2send
@@ -234,7 +236,7 @@ var _pai = function(sid) {
                         savedsessions.splice(i, 1);
                     }
                 }
-                window.localStorage.setItem("_pai", JSONPAI.stringifypai(savedpai));
+                window.localStorage.setItem("_pai", paijsonstringify(savedpai));
             };
             ifr.src = _pai.remoteCORSHTML;
             document.body.appendChild(ifr);
@@ -242,9 +244,7 @@ var _pai = function(sid) {
         eventInject(window, 'beforeunload', function() {
             p.push({"e" : "unload"});
             p.savelocal();
-            // 当ie>8或非ie时，通过beforeunload进行ajax提交数据不会成功，因此不做saveremote及清除数据，待下次进入或长时间等待后的重动时提交
-            var ie8 = eval("!-[1,]");
-            if (window.parent == window && ie8)
+            if (window.parent == window)
               p.saveremote();
         });
         // TODO: DIV、TEXTAREA等的onscroll没有截取到（不冒泡），iframe的有截取到
@@ -254,7 +254,7 @@ var _pai = function(sid) {
         // this maybe buggy on IE<=9 when there is more than one script use appendChild script, and with defer.
         // On Chrome, this works after $(window).load, but before body tag onload.
         bodyjs.defer = "true";
-        bodyjs.text = "if (pai) {pai.push(" + JSONPAI.stringifypai({
+        bodyjs.text = "if (pai) {pai.push(" + paijsonstringify({
             'e': 'pageload',
             't': new Date().getTime() - p.loadStart,
             "viewport": getViewPortSize(),
