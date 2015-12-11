@@ -214,7 +214,7 @@ var _pai = function(sid) {
                     return;
                 savedpai = paijsonparse(savedpai);
                 var savedsessions = savedpai.sessions;
-                if (!savedsessions || savedsessions.length == 0)
+                if (!savedsessions || savedsessions.length === 0)
                     return;
                 var sessions2send = [];
                 for (var i = 0; i < savedsessions.length; i++) {
@@ -231,9 +231,9 @@ var _pai = function(sid) {
                 } catch (e) {
                     console.log(e);
                 }
-                for (var i = savedsessions.length - 1; i >= 0; i--) {
-                    if (savedsessions[i].sid != p.sid) {
-                        savedsessions.splice(i, 1);
+                for (var j = savedsessions.length - 1; j >= 0; j--) {
+                    if (savedsessions[j].sid != p.sid) {
+                        savedsessions.splice(j, 1);
                     }
                 }
                 window.localStorage.setItem("_pai", paijsonstringify(savedpai));
