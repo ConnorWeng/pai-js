@@ -22,10 +22,8 @@ describe('server', function() {
 			mkdirStub = sinon.stub();
 			appendFileStub = sinon.stub();
             server.stubFs({
-                statSync: function(path, callback) {
-                    return {
-                        isDirectory: function() { return false; }
-                    };
+                existsSync: function(path) {
+                    return false;
                 },
                 mkdirSync: mkdirStub,
 				appendFile: appendFileStub

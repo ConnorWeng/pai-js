@@ -69,8 +69,7 @@ function handleError(req, res, statusCode, err) {
 
 function appendLog(message, callback) {
 	var dir = resolvePath('./logs');
-	var stats = fs.statSync(dir);
-	if (!stats.isDirectory()) {
+	if (!fs.existsSync(dir)) {
 		fs.mkdirSync(dir);
 	}
 	fs.appendFile(resolvePath(dir, moment().format('YYYY-MM-DD') + '.log'), message + '\n', callback);
