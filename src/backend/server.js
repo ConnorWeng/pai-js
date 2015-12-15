@@ -4,6 +4,7 @@ var parseUrl = require('url').parse;
 var resolvePath = require('path').resolve;
 var moment = require('moment');
 var etag = require('etag');
+var fresh = require('fresh');
 
 var STATIC_RESOURCE_EXTS = ['js', 'css', 'html', 'htm', 'jpge', 'jpg', 'png', 'ico', 'map'];
 var RESOURCE_TYPE_MAP = {
@@ -47,9 +48,14 @@ function handleStaticResource(req, res, next) {
 	if (req.method !== 'GET' || !~STATIC_RESOURCE_EXTS.indexOf(ext)) return false;
 	fs.readFile(resolvePath(path), function(err, data) {
 		if (err) return next(new Error('request resouce not exists'), 404);
-		res.writeHead(200, {'Content-Type': RESOURCE_TYPE_MAP[ext],
-							'ETag': makeETag(data, 'utf8')});
-		res.end(data);
+		res.setHeader('ETag', makeETag(data, 'utf8'));
+		var statusCode = fresh(req.headers, res._headers) ? 304 : 200;
+		res.writeHead(statusCode, {'Content-Type': RESOURCE_TYPE_MAP[ext]});
+		if (statusCode === 200) {
+			res.end(data);
+		} else {
+			res.end();
+		}
 	});
 	return true;
 }

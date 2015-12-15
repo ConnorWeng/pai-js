@@ -24,12 +24,14 @@ describe('server', function() {
 				return 'HASHOFHTML';
 			});
 			var resStub = {
+				setHeader: sinon.stub(),
 				writeHead: sinon.stub(),
-				end: sinon.stub()
+				end: sinon.stub(),
+				_headers: {}
 			};
-			server.handleStaticResource({url:'http://test/some.html', method: 'GET'}, resStub, null);
-			resStub.writeHead.calledOnce.should.equal(true);
-			resStub.writeHead.args[0].should.eql([200, {'Content-Type': 'text/html', 'ETag': 'HASHOFHTML'}]);
+			server.handleStaticResource({url:'http://test/some.html', method: 'GET', headers: {}}, resStub, null);
+			resStub.setHeader.calledOnce.should.equal(true);
+			resStub.setHeader.args[0].should.eql(['ETag', 'HASHOFHTML']);
 		});
 	});
 

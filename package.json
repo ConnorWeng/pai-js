@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "etag": "^1.7.0",
+    "fresh": "^0.3.0",
     "moment": "^2.10.6"
   }
 }
