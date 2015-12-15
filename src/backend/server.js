@@ -45,7 +45,7 @@ function handleStaticResource(req, res, next) {
 	var ext = path.substr(path.lastIndexOf('.') + 1);
 	if (req.method !== 'GET' || !~STATIC_RESOURCE_EXTS.indexOf(ext)) return false;
 	fs.readFile(resolvePath(path), function(err, data) {
-		if (err) next(new Error('request resouce not exists'), 404);
+		if (err) return next(new Error('request resouce not exists'), 404);
 		res.writeHead(200, {'Content-Type': RESOURCE_TYPE_MAP[ext]});
 		res.end(data);
 	});
@@ -55,7 +55,7 @@ function handleStaticResource(req, res, next) {
 function handleMessage(req, res, next) {
 	if (req.method !== 'POST') return false;
 	appendLog(req.body, function(err) {
-		if (err) next(err, 500);
+		if (err) return next(err, 500);
 		res.writeHead(200, {'Content-Type': 'text/json'});
 		res.end('{"success": true}');
 	});
