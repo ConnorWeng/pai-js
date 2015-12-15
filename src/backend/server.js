@@ -83,12 +83,10 @@ function appendLog(message, callback) {
 	fs.appendFile(resolvePath(dir, moment().format('YYYY-MM-DD') + '.log'), message + '\n', callback);
 }
 
-function makeETag(data, encoding) {
-	var buf = !Buffer.isBuffer(data)
-			? new Buffer(data, encoding)
-			: data;
+var makeETag = function(data, encoding) {
+	var buf = !Buffer.isBuffer(data) ? new Buffer(data, encoding) : data;
 	return etag(buf, {weak: false});
-}
+};
 
 if (process.env.NODE_ENV === 'test') {
 	exports.handleStaticResource = handleStaticResource;
