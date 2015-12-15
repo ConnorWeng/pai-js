@@ -7,39 +7,56 @@ var server = require('../../src/backend/server');
 chai.should();
 
 describe('server', function() {
-    describe('handleStaticResource', function() {
-        it('should false when request is not for static resource', function() {
-            server.handleStaticResource({url: 'http://test/api', method: 'GET'}, {}, null).should.equal(false);
-        });
-        it('should true when request is for static resource', function() {
-            server.handleStaticResource({url:'http://test/some.html', method: 'GET'}, {}, null).should.equal(true);
-        });
-    });
+	describe('handleStaticResource', function() {
+		it('should false when request is not for static resource', function() {
+			server.handleStaticResource({url: 'http://test/api', method: 'GET'}, {}, null).should.equal(false);
+		});
+		it('should true when request is for static resource', function() {
+			server.handleStaticResource({url:'http://test/some.html', method: 'GET'}, {}, null).should.equal(true);
+		});
+		it('should have a strong ETag in response head', function() {
+			server.stubFs({
+				readFile: function(path, callback) {
+					callback(null, 'some data');
+				}
+			});
+			server.stubMakeETag(function() {
+				return 'HASHOFHTML';
+			});
+			var resStub = {
+				writeHead: sinon.stub(),
+				end: sinon.stub()
+			};
+			server.handleStaticResource({url:'http://test/some.html', method: 'GET'}, resStub, null);
+			resStub.writeHead.calledOnce.should.equal(true);
+			resStub.writeHead.args[0].should.eql([200, {'Content-Type': 'text/html', 'ETag': 'HASHOFHTML'}]);
+		});
+	});
 
-    describe('appendLog', function() {
+	describe('appendLog', function() {
 		var mkdirStub, appendFileStub, callbackStub;
 		beforeEach(function() {
 			mkdirStub = sinon.stub();
 			appendFileStub = sinon.stub();
-            server.stubFs({
-                existsSync: function(path) {
-                    return false;
-                },
-                mkdirSync: mkdirStub,
+			server.stubFs({
+				existsSync: function(path) {
+					return false;
+				},
+				mkdirSync: mkdirStub,
 				appendFile: appendFileStub
-            });
+			});
 			callbackStub = sinon.stub();
 		});
 		
-        it('should create directory if not exists', function() {
-            server.appendLog('one log record', callbackStub);
-            mkdirStub.calledOnce.should.equal(true);
-            mkdirStub.args[0].should.eql([resolvePath('./logs')]);
-        });
-        it('should append log to the daily file', function() {
+		it('should create directory if not exists', function() {
+			server.appendLog('one log record', callbackStub);
+			mkdirStub.calledOnce.should.equal(true);
+			mkdirStub.args[0].should.eql([resolvePath('./logs')]);
+		});
+		it('should append log to the daily file', function() {
 			server.appendLog('one log record', callbackStub);
 			appendFileStub.calledOnce.should.equal(true);
 			appendFileStub.args[0].should.eql([resolvePath('./logs', moment().format('YYYY-MM-DD') + '.log'), 'one log record\n', callbackStub]);
-        });
-    });
+		});
+	});
 });

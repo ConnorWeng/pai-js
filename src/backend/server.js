@@ -3,6 +3,7 @@ var fs = require('fs');
 var parseUrl = require('url').parse;
 var resolvePath = require('path').resolve;
 var moment = require('moment');
+var etag = require('etag');
 
 var STATIC_RESOURCE_EXTS = ['js', 'css', 'html', 'htm', 'jpge', 'jpg', 'png', 'ico', 'map'];
 var RESOURCE_TYPE_MAP = {
@@ -46,7 +47,8 @@ function handleStaticResource(req, res, next) {
 	if (req.method !== 'GET' || !~STATIC_RESOURCE_EXTS.indexOf(ext)) return false;
 	fs.readFile(resolvePath(path), function(err, data) {
 		if (err) return next(new Error('request resouce not exists'), 404);
-		res.writeHead(200, {'Content-Type': RESOURCE_TYPE_MAP[ext]});
+		res.writeHead(200, {'Content-Type': RESOURCE_TYPE_MAP[ext],
+							'ETag': makeETag(data, 'utf8')});
 		res.end(data);
 	});
 	return true;
@@ -75,10 +77,18 @@ function appendLog(message, callback) {
 	fs.appendFile(resolvePath(dir, moment().format('YYYY-MM-DD') + '.log'), message + '\n', callback);
 }
 
+function makeETag(data, encoding) {
+	var buf = !Buffer.isBuffer(data)
+			? new Buffer(data, encoding)
+			: data;
+	return etag(buf, {weak: false});
+}
+
 if (process.env.NODE_ENV === 'test') {
 	exports.handleStaticResource = handleStaticResource;
 	exports.handleMessage = handleMessage;
 	exports.handleError = handleError;
 	exports.appendLog = appendLog;
 	exports.stubFs = function(fsStub) { fs = fsStub; };
+	exports.stubMakeETag = function(stub) { makeETag = stub; };
 }
