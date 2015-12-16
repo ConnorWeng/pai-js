@@ -242,7 +242,10 @@ var _pai = function(sid) {
 			document.body.appendChild(ifr);
 		}
 		eventInject(window, 'beforeunload', function() {
-			p.push({"e" : "unload"});
+			p.push({
+				"e": "unload",
+				"t": new Date().getTime() - p.loadStart
+			});
 			p.savelocal();
 			if (window.parent == window)
 			  p.saveremote();
