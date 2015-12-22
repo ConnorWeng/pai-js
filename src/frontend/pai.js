@@ -192,8 +192,12 @@ var _pai = function(sid) {
 			} else if (document.documentElement && typeof document.documentElement.clientWidth != 'undefined' && document.documentElement.clientWidth !== 0) {
 				return [document.documentElement.clientWidth, document.documentElement.clientHeight];
 			// Older IE
-			} else {
+			} else if (document.getElementsByTagName('body').length > 0) {
 				return [document.getElementsByTagName('body')[0].clientWidth, document.getElementsByTagName('body')[0].clientHeight];
+			} else if (document.getElementsByTagName('frameset').length > 0) {
+				return [document.getElementsByTagName('frameset')[0].clientWidth, document.getElementsByTagName('frameset')[0].clientHeight];
+			} else {
+				return '';
 			}
 		};
 		_pai.resizeTimer = null;
