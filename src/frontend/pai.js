@@ -59,6 +59,16 @@ var _pai = function(sid) {
 	_pai.remoteCORSHTML = _pai.remoteURL + "/cors.htm";
 	_pai.saving = false;
 	var ifr = null; // find&see: onbeforeunload在顶层页面预注入
+	var initializeIFrameForPostMessage = function() {
+		ifr = document.createElement('iframe');
+		ifr.style.display = 'none';
+		ifr.src = _pai.remoteCORSHTML;
+		if (document.getElementsByTagName('body').length > 0) {
+			document.body.appendChild(ifr);
+		} else if (document.getElementsByTagName('frame').length > 0) {
+			document.getElementsByTagName('frame')[0].appendChild(ifr);
+		}
+	};
 	p.saveremote = function() {
 		if (_pai.saving)
 			return;
@@ -67,9 +77,7 @@ var _pai = function(sid) {
 			p.savelocal();
 		console.log(window.localStorage.getItem("_pai"));
 		if (ifr === null) {
-			ifr = document.createElement('iframe');
-			ifr.style.display = 'none';
-			document.body.appendChild(ifr);
+			initializeIFrameForPostMessage();
 			var _load = function() {
 				try {
 					ifr.contentWindow.postMessage(window.localStorage.getItem("_pai"), '*');
@@ -80,7 +88,6 @@ var _pai = function(sid) {
 				}
 			};
 			eventInject(ifr, 'load', _load);
-			ifr.src = _pai.remoteCORSHTML;
 		} else {
 			ifr.contentWindow.postMessage(window.localStorage.getItem("_pai"), '*');
 			window.localStorage.removeItem("_pai");
@@ -210,8 +217,7 @@ var _pai = function(sid) {
 		});
 		// onbeforeunload在顶层页面预注入
 		if (window.parent == window) {
-			ifr = document.createElement('iframe');
-			ifr.style.display = 'none';
+			initializeIFrameForPostMessage();
 			ifr.onload = function() {
 				var savedpai = window.localStorage.getItem("_pai");
 				if (!savedpai)
@@ -242,8 +248,6 @@ var _pai = function(sid) {
 				}
 				window.localStorage.setItem("_pai", paijsonstringify(savedpai));
 			};
-			ifr.src = _pai.remoteCORSHTML;
-			document.body.appendChild(ifr);
 		}
 		eventInject(window, 'beforeunload', function() {
 			p.push({
