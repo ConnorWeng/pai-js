@@ -1,6 +1,6 @@
 var _pai = function(sid) {
-	var paijsonstringify = (JSON.stringify.toString().indexOf("[native code]") != -1) ? JSON.stringify : JSONPAI.stringifypai;
-	var paijsonparse = (JSON.parse.toString().indexOf("[native code]") != -1) ? JSON.parse : JSONPAI.parse;
+	var paijsonstringify = (typeof(JSON) !== 'undefined' && JSON.stringify.toString().indexOf("[native code]") != -1) ? JSON.stringify : JSONPAI.stringifypai;
+	var paijsonparse = (typeof(JSON) !== 'undefined' && JSON.parse.toString().indexOf("[native code]") != -1) ? JSON.parse : JSONPAI.parse;
 	var p = this;
 	p.appid = window.location.protocol + '//' + window.location.hostname;
 	p.mid = window.localStorage.getItem('_pai_mid');
