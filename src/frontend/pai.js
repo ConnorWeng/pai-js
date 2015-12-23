@@ -65,8 +65,10 @@ var _pai = function(sid) {
 		ifr.src = _pai.remoteCORSHTML;
 		if (document.getElementsByTagName('body').length > 0) {
 			document.body.appendChild(ifr);
-		} else if (document.getElementsByTagName('frame').length > 0) {
-			document.getElementsByTagName('frame')[0].appendChild(ifr);
+		} else {
+			var newBody = document.createElement('body');
+			document.getElementsByTagName('html')[0].appendChild(newBody);
+			newBody.appendChild(ifr);
 		}
 	};
 	p.saveremote = function() {
