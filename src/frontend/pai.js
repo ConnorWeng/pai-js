@@ -1,4 +1,5 @@
 var _pai = function(sid) {
+	if (typeof PAI_SKIP !== 'undefined' && PAI_SKIP) return {};
 	var paijsonstringify = (typeof(JSON) !== 'undefined' && JSON.stringify.toString().indexOf("[native code]") != -1) ? JSON.stringify : JSONPAI.stringifypai;
 	var paijsonparse = (typeof(JSON) !== 'undefined' && JSON.parse.toString().indexOf("[native code]") != -1) ? JSON.parse : JSONPAI.parse;
 	var p = this;
@@ -98,6 +99,7 @@ var _pai = function(sid) {
 		}
 	};
 	var eventInject = function(obj, eventname, func) {
+		if (typeof PAI_IGNORE_EVENTS !== 'undefined' && ~arrayIndexOf(PAI_IGNORE_EVENTS, eventname)) return;
 		if (obj.addEventListener) {
 			obj.addEventListener(eventname, func, false);
 		} else if (obj.attachEvent) {
@@ -280,6 +282,24 @@ var _pai = function(sid) {
 		})+ ")};";
 		document.body.appendChild(bodyjs);
 	};
+
+	function arrayIndexOf(arr, elt /*, from*/) {
+        var len = arr.length >>> 0;
+		var from = Number(arguments[2]) || 0;
+		from = (from < 0)
+			? Math.ceil(from)
+			: Math.floor(from);
+		if (from < 0)
+			from += len;
+
+		for (; from < len; from++) {
+			if (from in arr &&
+				arr[from] === elt)
+				return from;
+		}
+		return -1;
+	}
+
 	/* console inject usage:
 	 * var bodyjs = document.createElement('script');bodyjs.type = "text/javascript";bodyjs.src = "http://kfzxhuangxlp/my/pai-js/paii.js";document.body.appendChild(bodyjs);
 	 * var pai = new _pai();
