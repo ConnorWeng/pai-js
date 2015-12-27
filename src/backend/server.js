@@ -1,6 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var parseUrl = require('url').parse;
+var parseQuery = require('querystring').parse;
 var resolvePath = require('path').resolve;
 var moment = require('moment');
 var etag = require('etag');
@@ -18,7 +19,7 @@ var RESOURCE_TYPE_MAP = {
 	'ico': 'image/ico',
 	'map': 'text/javascript'
 };
-var HANDLERS = [handleStaticResource, handleMessage];
+var HANDLERS = [handleDynamicConfig, handleStaticResource, handleMessage];
 
 http.createServer(function(req, res) {
 	var next = function(err, statusCode) {
@@ -41,6 +42,21 @@ http.createServer(function(req, res) {
 		}
 	});
 }).listen(process.env.PAI_PORT || 9898);
+
+function handleDynamicConfig(req, res, next) {
+	var url = parseUrl(req.url);
+	var pathname = url.pathname;
+	if (req.method !== 'GET' || pathname !== '/config.js') return false;
+	var query = url.query;
+	var params = parseQuery(query);
+	res.writeHead(200, {'Content-Type': RESOURCE_TYPE_MAP.js});
+	if (params.app && dynamicConfig(params.app)) {
+		res.end(dynamicConfig(params.app));
+	} else {
+		res.end('var PAI_APP="";var PAI_IGNORE_EVENTS=[];var PAI_SKIP=false;');
+	}
+	return true;
+}
 
 function handleStaticResource(req, res, next) {
 	var path = parseUrl(req.url).path.substr(1);
@@ -83,6 +99,14 @@ function appendLog(message, callback) {
 	fs.appendFile(resolvePath(dir, moment().format('YYYY-MM-DD') + '.log'), message + '\n', callback);
 }
 
+function dynamicConfig(app) {
+	if (app === 'smis') {
+		return 'var PAI_APP=smis;var PAI_IGNORE_EVENTS=[];var PAI_SKIP=false;';
+	} else {
+		return false;
+	}
+}
+
 var makeETag = function(data, encoding) {
 	var buf = !Buffer.isBuffer(data) ? new Buffer(data, encoding) : data;
 	return etag(buf, {weak: false});
@@ -90,6 +114,7 @@ var makeETag = function(data, encoding) {
 
 if (process.env.NODE_ENV === 'test') {
 	exports.handleStaticResource = handleStaticResource;
+	exports.handleDynamicConfig = handleDynamicConfig;
 	exports.handleMessage = handleMessage;
 	exports.handleError = handleError;
 	exports.appendLog = appendLog;

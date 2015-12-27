@@ -61,4 +61,25 @@ describe('server', function() {
 			appendFileStub.args[0].should.eql([resolvePath('./logs', moment().format('YYYY-MM-DD') + '.log'), 'one log record\n', callbackStub]);
 		});
 	});
+
+	describe('handleDynamicConfig', function() {
+		var endStub, writeHeadStub, resStub;
+		beforeEach(function() {
+			endStub = sinon.stub();
+			writeHeadStub = sinon.stub();
+			resStub = {end: endStub, writeHead: writeHeadStub};
+		});
+		it('should return false if request file is not config.js', function() {
+			server.handleDynamicConfig({url: 'http://test/other.js?app=nonexists', method: 'GET'}, {}, null).should.equal(false);
+		});
+		it('should return default config if app is not defined', function() {
+			server.handleDynamicConfig({url: 'http://test/config.js?app=nonexists', method: 'GET'}, resStub, null).should.equal(true);
+			resStub.writeHead.args[0].should.eql([200, {'Content-Type': 'text/javascript'}]);
+			resStub.end.args[0].should.eql(['var PAI_APP="";var PAI_IGNORE_EVENTS=[];var PAI_SKIP=false;']);
+		});
+		it('should return config according to app', function() {
+			server.handleDynamicConfig({url: 'http://test/config.js?app=smis', method: 'GET'}, resStub, null).should.equal(true);
+			resStub.end.args[0].should.eql(['var PAI_APP=smis;var PAI_IGNORE_EVENTS=[];var PAI_SKIP=false;']);
+		});
+	});
 });
