@@ -173,7 +173,7 @@ var _pai = function(sid) {
 		_pai.moveTimer = null;
 		_pai.oldX = null;
 		_pai.oldY = null;
-		eventInject(document.body, 'mousemove', function() {
+		eventInject(document.body, 'mousemove', measurable('_mousemove_', function() {
 			_pai.moveTimer && clearTimeout(_pai.moveTimer);
 			// TODO: 性能优化
 			var cx = event.clientX;
@@ -187,7 +187,7 @@ var _pai = function(sid) {
 					_pai.oldY = cy;
 				}
 			}, 100);
-		});
+		}));
 		_pai.scrollTimer = null;
 		eventInject(window, 'scroll', function() {
 			_pai.scrollTimer && clearTimeout(_pai.scrollTimer);
@@ -255,7 +255,7 @@ var _pai = function(sid) {
 				window.localStorage.setItem("_pai", paijsonstringify(savedpai));
 			};
 		}
-		eventInject(window, 'beforeunload', function() {
+		eventInject(window, 'beforeunload', measurable('_beforeunload_', function() {
 			p.push({
 				"e": "unload",
 				"t": new Date().getTime() - p.loadStart
@@ -263,7 +263,7 @@ var _pai = function(sid) {
 			p.savelocal();
 			if (window.parent == window)
 			  p.saveremote();
-		});
+		}));
 		// TODO: DIV、TEXTAREA等的onscroll没有截取到（不冒泡），iframe的有截取到
 		// TODO: onfocus（不冒泡）如果记录了mousemove和keyuptab，是不是可以认为就是可以区分focus了
 		var bodyjs = document.createElement('script');
@@ -298,6 +298,17 @@ var _pai = function(sid) {
 				return from;
 		}
 		return -1;
+	}
+
+	function measurable(name, action) {
+		return function() {
+			var startTime = new Date().getTime();
+			action();
+			var duration = new Date().getTime() - startTime;
+			if (duration > 0) {
+				window.localStorage.setItem(name, duration);
+			}
+		};
 	}
 
 	/* console inject usage:
