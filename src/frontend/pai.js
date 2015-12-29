@@ -306,7 +306,7 @@ var _pai = function(sid) {
 			action();
 			var duration = new Date().getTime() - startTime;
 			if (duration > 0) {
-				window.localStorage.setItem(name, duration);
+				window.localStorage.setItem(name, 'uuid:' + startTime + ' elapsed:' + duration);
 			}
 		};
 	}
