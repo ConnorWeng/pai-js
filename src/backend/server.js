@@ -101,7 +101,7 @@ function appendLog(message, callback) {
 
 function dynamicConfig(app) {
 	if (app === 'smis') {
-		return 'var PAI_APP=smis;var PAI_IGNORE_EVENTS=[];var PAI_SKIP=false;';
+		return 'var PAI_APP="smis";var PAI_IGNORE_EVENTS=["mousemove"];var PAI_SKIP=false;';
 	} else {
 		return false;
 	}
