@@ -301,14 +301,18 @@ var _pai = function(sid) {
 	}
 
 	function measurable(name, action) {
-		return function() {
-			var startTime = new Date().getTime();
-			action();
-			var duration = new Date().getTime() - startTime;
-			if (duration > 0) {
-				window.localStorage.setItem(name, 'uuid:' + startTime + ' elapsed:' + duration);
-			}
-		};
+		if (typeof PAI_MEASURABLE !== 'undefined' && PAI_MEASURABLE) {
+			return function() {
+				var startTime = new Date().getTime();
+				action();
+				var duration = new Date().getTime() - startTime;
+				if (duration > 0) {
+					window.localStorage.setItem(name, 'uuid:' + startTime + ' elapsed:' + duration);
+				}
+			};
+		} else {
+			return action;
+		}
 	}
 
 	/* console inject usage:
